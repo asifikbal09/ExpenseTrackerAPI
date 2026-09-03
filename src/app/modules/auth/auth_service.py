@@ -1,7 +1,12 @@
-from src.app.modules.user.user_validation import CrateUser, LoginUser
-from src.app.modules.user.uesr_model import User
+import os
 from passlib.context import CryptContext
+from dotenv import load_dotenv
+load_dotenv()
 
+
+from src.app.modules.user.uesr_model import User
+from src.app.modules.user.user_validation import CrateUser, LoginUser
+from src.app.utils.jwt_helper import generate_jwt_token
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -30,7 +35,7 @@ def registerUser(payload:CrateUser, db):
 
 
 def loginUser(payload:LoginUser, db):
-    user = db.query(User).filter(User.email == payload.email).first()
+    user = db.query(User).filter(User.username == payload.username).first()
     
     if not user:
         return None
@@ -38,8 +43,12 @@ def loginUser(payload:LoginUser, db):
     if not pwd_context.verify(payload.password, user.hash_password):
         return None
     
+    access_token = generate_jwt_token(user.id, os.getenv("ACCESS_TOKEN_SECRET"), "HS256", int(os.getenv("ACCESS_TOKEN_EXPIRE_IN")))
+    access_token_type = "Bearer"
+    
     return {
         "username": user.username,
-        "email": user.email,
+        "access_token": access_token,
+        "token_type": access_token_type
     }
 
