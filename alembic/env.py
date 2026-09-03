@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from src.database import Base
 from src.app.modules.user.uesr_model import User
+from src.app.modules.transaction.transaction_model import Transaction
 
 load_dotenv()
 
