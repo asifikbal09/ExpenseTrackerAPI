@@ -37,3 +37,11 @@ def create_transaction(
 def get_transactions(db: Session, user_id: UUID):
     transactions = db.query(Transaction).filter(Transaction.user_id == user_id).all()
     return jsonable_encoder(transactions)
+
+def get_transaction_by_id(db: Session, transaction_id: UUID, user_id: UUID):
+    transaction = (
+        db.query(Transaction)
+        .filter(Transaction.id == transaction_id, Transaction.user_id == user_id)
+        .first()
+    )
+    return jsonable_encoder(transaction)
