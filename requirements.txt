@@ -14,6 +14,6 @@ httpx
 pytest-asyncio
 aiofiles
 jinja2
-dotenv
+python-dotenv
 PyJWT
 Pydantic
