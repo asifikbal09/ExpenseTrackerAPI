@@ -24,3 +24,20 @@ def generate_jwt_token(
         secret_key,
         algorithm=algorithm,
     )
+    
+def verify_jwt_token(
+    token: str,
+    secret_key: str,
+    algorithm: str,
+) -> dict:
+    try:
+        payload = jwt.decode(
+            token,
+            secret_key,
+            algorithms=[algorithm],
+        )
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise ValueError("Token has expired")
+    except jwt.InvalidTokenError:
+        raise ValueError("Invalid token")

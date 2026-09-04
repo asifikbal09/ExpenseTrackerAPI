@@ -1,9 +1,12 @@
 import uuid
+from datetime import datetime
+from decimal import Decimal
+from typing import ClassVar
+
+from pydantic import BaseModel, ConfigDict
+from sqlalchemy import UUID, Column, DateTime, Enum, Float, ForeignKey, String
 
 from src.database import Base
-
-from sqlalchemy import UUID, Column, Integer, Float, String, DateTime, ForeignKey, Enum
-from datetime import datetime
 
 type_enum = Enum("income", "expense", name="transaction_type")
 
@@ -15,8 +18,9 @@ class Transaction(Base):
     title = Column(String(255), nullable=False)
     amount = Column(Float, nullable=False)
     type = Column(type_enum, nullable=False)
-    category= Column(String(255), nullable=False)
+    category = Column(String(255), nullable=False)
     date = Column(DateTime, default=datetime.now)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id",ondelete="CASCADE"), nullable=False)
-
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
 
