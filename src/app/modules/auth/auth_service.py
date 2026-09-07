@@ -1,4 +1,5 @@
 import os
+from fastapi import HTTPException
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 load_dotenv()
@@ -38,10 +39,10 @@ def loginUser(payload:LoginUser, db):
     user = db.query(User).filter(User.username == payload.username).first()
     
     if not user:
-        return None
+        raise HTTPException(status_code=401, detail="Invalid username or password")
     
     if not pwd_context.verify(payload.password, user.hash_password):
-        return None
+        raise HTTPException(status_code=401, detail="Invalid username or password")
     
     access_token = generate_jwt_token(user.id, os.getenv("ACCESS_TOKEN_SECRET"), "HS256", int(os.getenv("ACCESS_TOKEN_EXPIRE_IN")))
     access_token_type = "Bearer"
